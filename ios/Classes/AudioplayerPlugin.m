@@ -77,6 +77,18 @@ FlutterMethodChannel *_channel;
 }
 
 - (void)play:(NSString*)url isLocal:(int)isLocal {
+    // Fix for iOS Speaker Output
+    // ktstephano: This is a fix created by eddywm
+    //             (@see https://github.com/rxlabz/audioplayer/pull/43)
+    NSError *error = nil;
+    BOOL success = [[AVAudioSession sharedInstance]
+                     setCategory:AVAudioSessionCategoryPlayback
+                     error:&error];
+    if (!success) {
+        NSLog(@"Error setting speaker");
+            
+    }
+    // End fix
     if (![url isEqualToString:lastUrl]) {
         [playerItem removeObserver:self
                         forKeyPath:@"player.currentItem.status"];
